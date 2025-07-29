@@ -1,0 +1,28 @@
+import addr_reg_pkg::*;
+
+extend component fwperiph_dma_c {
+    action mem2mem_impl {
+        addr_handle_t       src;
+        addr_handle_t       dst;
+        bit[32]             xsz;
+        bit[32]             csz;
+        bit[32]             cnt;
+        lock channel_r      chn;
+    }
+
+    extend action mem2mem {
+        mem2mem_impl impl;
+
+        activity {
+            impl {
+                .src=make_handle_from_claim(dat_i.mem),
+                .dst=make_handle_from_claim(dat_o.mem),
+                .xsz=xsz,
+                .csz=csz,
+                .cnt=(dat_i.mem.size/(xsz*csz)),
+                // Implementation uses same resource
+                .chn=chn impl.chn
+            };
+        }
+    }
+}

@@ -1,0 +1,17 @@
+package:
+  name: pss-fwperiph-dma
+
+  dep-sets:
+  - name: default-dev
+    deps: 
+    - name: vsc-dm
+      url: https://github.com/vsc-tools/vsc-dm.git
+    - name: zuspec-arl-dm
+      url: https://github.com/zuspec/zuspec-arl-dm.git
+    - name: zuspec-be-sw
+      url: https://github.com/zuspec/zuspec-be-sw.git
+    - name: zuspec-fe-parser
+      url: https://github.com/zuspec/zuspec-fe-parser.git
+    - name: zuspec-parser
+      url: https://github.com/zuspec/zuspec-parser.git
+

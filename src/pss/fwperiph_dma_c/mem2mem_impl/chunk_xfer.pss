@@ -1,0 +1,45 @@
+
+extend component fwperiph_dma_c {
+    resource bus_if_r { }
+    pool [1] bus_if_r bus_if;
+
+    action chunk {
+        addr_handle_t       src;
+        addr_handle_t       dst;
+        lock bus_if_r       bus;
+        bit[32]             xsz;
+        bit[32]             csz;
+
+        exec body {
+            bit[32] data;
+            repeat (i : csz) {
+                match (xsz) {
+                    [1]: {
+                        data = read8(make_handle_from_handle(src, i*xsz));
+                        write8(make_handle_from_handle(src, i*xsz), data);
+                    }
+                    [2]: {
+                        data = read16(make_handle_from_handle(src, i*xsz));
+                        write16(make_handle_from_handle(src, i*xsz), data);
+                    }
+                    [4]: {
+                        data = read32(make_handle_from_handle(src, i*xsz));
+                        write32(make_handle_from_handle(src, i*xsz), data);
+                    }
+                }
+            }
+        }
+    }
+
+    extend action mem2mem_impl {
+        activity {
+            repeat (i : cnt) {
+                // Transfer <cnt> chunks
+                do chunk {
+                    .src=make_handle_from_handle(src, i*(csz*xsz)),
+                    .dst=make_handle_from_handle(dst, i*(csz*xsz)),
+                }
+            }
+        }
+    }
+}

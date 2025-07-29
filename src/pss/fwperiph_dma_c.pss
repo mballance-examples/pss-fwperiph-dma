@@ -1,0 +1,10 @@
+
+buffer mem_b {
+    addr_claim_s<>      mem;
+}
+
+component fwperiph_dma_c {
+    resource channel_r { }
+    pool [8] channel_r channels;
+
+}

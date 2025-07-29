@@ -1,0 +1,16 @@
+
+extend component fwperiph_dma_c {
+
+    action mem2mem {
+        input mem_b                 dat_i;
+        output mem_b                dat_o;
+        lock channel_r              chn;
+        rand bit[32] in [1,2,4,8]   xsz;
+        rand bit[32]                csz;
+
+        constraint dat_i.mem.size == dat_o.mem.size;
+        constraint (dat_i.mem.size%xsz) == 0;
+        constraint ((csz*xsz) <= dat_i.mem.size);
+    }
+
+}

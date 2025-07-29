@@ -1,0 +1,12 @@
+
+import target function void memcpy(bit[64] dst, bit[64] src, bit[32] sz);
+
+extend action fwperiph_dma_c::mem2mem_impl {
+
+    exec body {
+        memcpy(
+            addr_value(dst),
+            addr_value(src),
+            xsz*cnt);
+    }
+}
