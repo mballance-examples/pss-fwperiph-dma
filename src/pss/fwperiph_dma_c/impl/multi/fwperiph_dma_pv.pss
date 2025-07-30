@@ -1,0 +1,71 @@
+
+component fwperiph_dma_pv {
+    buffer SelChannel {
+        int id;
+    }
+    state LastSel {
+        int id = -1;
+    }
+
+    action SelectChannel {
+        output SelChannel channel;
+        output LastSel last;
+
+        exec body {
+            int sel = -1;
+            int sel_pri = -1;
+            do {
+                repeat (i : 8) {
+                    csr_s csr_v = comp.regs.channels[i].csr.read();
+                    // Need to select the highest-priority that *isn't* the
+                    // last one
+                    if (csr_v.CH_EN) {
+                        if (i != last.id || csr_v.PRI > sel_pri)
+
+                    }
+                }
+            } while (sel == -1);
+
+            channel.id = sel;
+            last.id = sel;
+
+            // Save the last-selected channel so we can
+            // round-robin
+        }
+    }
+
+    action TransferChunk {
+        input SelChannel channel;
+
+        exec body {
+            ref channel_c ch = comp.regs.channels[channel.id];
+            size_s sz = ch.sz.read();
+            repeat (i : sz.chk_sz) {
+
+            }
+        }
+
+    }
+
+    action Root {
+        activity {
+            repeat {
+                SC: do SelectChannel;
+                TC: do TransferChunk {.channel=SC.channel};
+            }
+        }
+    }
+
+    // Define a root behavior thread
+    activity {
+        do Root;
+    }
+}
+
+extend component fwperiph_dma {
+    fwperiph_dma_pv         impl;
+
+    // Our implementation provides a register model
+    dma_regs                regs;
+
+}

@@ -1,10 +1,10 @@
 import addr_reg_pkg::*;
 
 extend component fwperiph_dma_c {
-    action mem2mem_impl {
+    action mem2mem_op {
         addr_handle_t       src;
         addr_handle_t       dst;
-        bit[32]             xsz;
+        bit[32]             xsz; // Note: extension beyond current IP
         bit[32]             csz;
         bit[32]             cnt;
         lock channel_r      chn;
@@ -21,7 +21,7 @@ extend component fwperiph_dma_c {
                 .csz=csz,
                 .cnt=(dat_i.mem.size/(xsz*csz)),
                 // Implementation uses same resource
-                .chn=chn impl.chn
+                .chn=impl.chn
             };
         }
     }

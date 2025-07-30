@@ -1,0 +1,59 @@
+import addr_reg_pkg::*;
+import std_pkg::*;
+
+package fwperiph_dma {
+
+    struct csr_s : packed_s<> {
+        bit     CH_EN;
+        bit     DST_SEL;
+        bit     SRC_SEL;
+        bit     INC_DST;
+        bit     INC_SRC;
+        bit     MODE;
+        bit     ARS;
+        bit     USE_ED;
+        bit     SZ_WB;
+        bit     STOP;
+        bit     BUSY;
+        bit     DONE;
+        bit     ERR;
+        bit[3]  PRI;
+        bit     REST_EN;
+        bit     INE_ERR;
+        bit     INE_DONE;
+        bit     INE_CHK_DONE;
+        bit     IRS_ERR;
+        bit     IRS_DONE;
+        bit     IRS_CHK;
+        bit[9]  rsvd;
+    }
+
+    struct size_s : packed_s<> {
+        bit[12]             tot_sz;
+        bit[4]              rsvd1;
+        bit[9]              chk_sz;
+        bit[7]              rsvd2;
+    }
+
+    component channel_c : reg_group_c {
+        reg_c<csr_s>        csr;
+        reg_c<size_s>       sz;
+        reg_c<bit[32]>      src;
+        reg_c<bit[32]>      src_m;
+        reg_c<bit[32]>      dst;
+        reg_c<bit[32]>      dst_m;
+        reg_c<bit[32]>      ll_ptr;
+        reg_c<bit[32]>      sw_ptr;
+    }
+
+    component regs_c : reg_group_c {
+        reg_c<bit[32]>      int_msk_a;
+        reg_c<bit[32]>      int_msk_b;
+        reg_c<bit[32]>      int_src_a;
+        reg_c<bit[32]>      int_src_b;
+
+        channel_c           channels[8];
+    }
+
+
+}

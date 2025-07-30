@@ -1,0 +1,34 @@
+
+extend component fwperiph_dma_c {
+    addr_handle_t       regs_h;
+    dma_regs            regs;
+    channel_c<int>      channel_irq[8];
+
+    function void dma_irq_handler() {
+        repeat (i : 8) {
+            // Read status and trigger channel irq if complete
+        }
+    }
+
+    extend action mem2mem_op {
+        exec init_down {
+            regs.set_handle(regs_h);
+        }
+
+        exec body {
+            ref channel_regs ch = comp.regs.channels[chn.instance_id];
+
+            // Program channel
+            ch.src.write_val(addr_value(src));
+            ch.dst.write_val(addr_value(dst));
+            ch.sz.write_field("chk_sz", csz);
+            ch.sz.write_field("tot_sz", cnt);
+
+            // Activate
+            ch.csr.write_field("CH_EN", 1);
+
+            // Wait for complete
+            channel_irq[chn.instance_id].get();
+        }
+    }
+}
